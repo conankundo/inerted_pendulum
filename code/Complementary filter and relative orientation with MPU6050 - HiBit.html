@@ -1,0 +1,770 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="osrVQGPmIRWhgTl5hW7tlyHybBPxycBVk7E4FjwC">
+
+    <title>Complementary filter and relative orientation with MPU6050 - HiBit</title>
+
+    <meta name="keywords" content="arduino, nano, wiring, i2c, schema, serial, circuit, mpu, accelerometer, gyroscope, gyro, sensor, temperature, imu, mpu6500, magnetometer, motion, orientation, mpu6050, 6dof">
+    <meta name="description" content="The MPU-60X0 is the world&#039;s first integrated 6-axis MotionTracking device that combines a 3-axis gyroscope, 3-axis accelerometer and a Digital Motion Pr...">
+
+            <meta property="fb:app_id" content="719148455765617">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Complementary filter and relative orientation with MPU6050">
+    <meta property="og:description" content="The MPU-60X0 is the world&#039;s first integrated 6-axis MotionTracking device that combines a 3-axis gyroscope, 3-axis accelerometer and a Digital Moti...">
+    <meta property="og:url" content="https://www.hibit.dev/posts/92/complementary-filter-and-relative-orientation-with-mpu6050">
+            <meta property="og:image" content="https://cdn.hibit.dev/images/social/2023/preview/mpu6050.png">
+        <meta property="og:image:width" content="764">
+        <meta property="og:image:height" content="400">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Complementary filter and relative orientation with MPU6050">
+    <meta name="twitter:description" content="The MPU-60X0 is the world&#039;s first integrated 6-axis MotionTracking device that combines a 3-axis gyroscope, 3-axis accelerometer and a Digital Moti...">
+    <meta name="twitter:url" content="https://www.hibit.dev/posts/92/complementary-filter-and-relative-orientation-with-mpu6050">
+            <meta name="twitter:image" content="https://cdn.hibit.dev/images/social/2023/preview/mpu6050.png">
+        <meta name="twitter:image:width" content="764">
+        <meta name="twitter:image:height" content="400">
+    
+    <meta name="msapplication-TileColor" content="#485664">
+    <meta name="msapplication-config" content="https://cdn.hibit.dev/browserconfig.xml">
+    <meta name="theme-color" content="#485664">
+    <meta name="application-name" content="HiBit">
+    <meta name="apple-mobile-web-app-title" content="HiBit">
+
+    <link rel="manifest" href="https://cdn.hibit.dev/site.webmanifest">
+    <link rel="mask-icon" href="https://cdn.hibit.dev/favicons/safari-pinned-tab.svg" color="#485664">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.hibit.dev/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.hibit.dev/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.hibit.dev/favicons/favicon-16x16.png">
+    <link rel="shortcut icon" href="https://cdn.hibit.dev/favicons/favicon.ico">
+
+            <link rel="canonical" href="https://www.hibit.dev/posts/92/complementary-filter-and-relative-orientation-with-mpu6050">
+    
+        <link rel="alternate" type="application/rss+xml" href="https://www.hibit.dev/rss/posts/92" title="rss">
+
+    <link rel="preconnect" href="https://cdn.hibit.dev">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.google-analytics.com">
+
+    <link rel="preload" href="https://cdn.hibit.dev/css/bootstrap.min.css?id=d2ccfade916a3d88ca93377af2d7f594" as="style">
+    <link rel="preload" href="https://cdn.hibit.dev/css/main.css?id=a26fe1d7d2abcec88a64e81172962384" as="style">
+
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap" as="style">
+
+    <link rel="preload" href="https://cdn.hibit.dev/css/icons.css?id=489f5b85783a7fd698f2b4eb3dc4db22" as="style">
+    <link rel="preload" href="https://cdn.hibit.dev/js/main.js?id=ccaf58122303860c86e030b8eb286f6d" as="script">
+
+            <link rel="preload" href="https://cdn.hibit.dev/css/glightbox.min.css" as="style">
+        <link rel="preload" href="https://cdn.hibit.dev/css/syntaxy.light.min.css" as="style">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.hibit.dev/css/bootstrap.min.css?id=d2ccfade916a3d88ca93377af2d7f594" media="screen" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="https://cdn.hibit.dev/css/main.css?id=a26fe1d7d2abcec88a64e81172962384" media="screen" onload="this.media='all'">
+
+            <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "Article",
+          "headline": "Complementary filter and relative orientation with MPU6050",
+                      "image": {
+                "@type": "ImageObject",
+                "url": "https://cdn.hibit.dev/images/posts/2023/headers/mpu6050_angles.png",
+                "width": 200,
+                "height": 200
+            },
+                    "author": {
+            "@type":  "Organization"  ,
+            "name": "HiBit",
+            "url": "https://www.hibit.dev/users/HiBit"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "HiBit",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://cdn.hibit.dev/images/logo_colored.png"
+            }
+          },
+          "keywords": "arduino,nano,wiring,i2c,schema,serial,circuit,mpu,accelerometer,gyroscope,gyro,sensor,temperature,imu,mpu6500,magnetometer,motion,orientation,mpu6050,6dof",
+          "datePublished": "2023-02-20T10:00:08+00:00",
+          "dateModified": "2023-02-20T10:00:08+00:00",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://www.hibit.dev/posts/92/complementary-filter-and-relative-orientation-with-mpu6050"
+          },
+          "articleSection" : "electronics",
+          "articleBody": "<p>The MPU-60X0 is the world's first integrated 6-axis MotionTracking device that combines a 3-axis gyroscope, 3-axis accelerometer and a Digital Motion Processor (DMP) all in a small package. It helps to measure velocity, orientation, acceleration, displacement and other motion like features</p><p>The MPU-6050 features three 16-bit analog-to-digital converters (ADCs) for digitizing the gyroscope outputs and three 16-bit ADCs for digitizing the accelerometer outputs. For precision tracking of both fast and slow motions, the parts feature a user-programmable gyroscope full-scale range and a user-programmable accelerometer full-scale range.</p><p>The MPU-6050 is a high performance accelerometer, gyroscope and magnetometer option for use in applications such as gesture recognition, self-balancing robots, cell phones, fitness monitoring and similar applications where detection of movement direction and magnitude along with rotation is desired. In <a href=\"https://www.hibit.dev/posts/90/complementary-filter-and-relative-orientation-with-mpu6050\" target=\"_blank\" rel=\"noreferrer noopener\">reading MPU6050 sensors with Arduino</a> article we've introduced the module and how to interact with it, now we will see how to use extracted data and get relative orientation.</p><h2>Components</h2><table class=\"table table-sm text-nowrap\"><tbody><tr><td colspan=\"1\" rowspan=\"1\"><p>%image:arduino-nano%</p></td><td colspan=\"1\" rowspan=\"1\" width=\"100%\"><p>1x Arduino Nano (<em>or another Arduino module)</em></p><p>%product:arduino-nano%</p></td></tr><tr><td colspan=\"1\" rowspan=\"1\"><p>%image:mini-breadboard%</p></td><td colspan=\"1\" rowspan=\"1\"><p>1x Mini Breadboard</p><p>%product:mini-breadboard%</p></td></tr><tr><td colspan=\"1\" rowspan=\"1\"><p>%image:mpu6050%</p></td><td colspan=\"1\" rowspan=\"1\"><p>1x MPU6050</p><p>%product:mpu6050%</p></td></tr><tr><td colspan=\"1\" rowspan=\"1\"><p>%image:dupont%</p></td><td colspan=\"1\" rowspan=\"1\"><p>Dupont wires</p><p>%product:dupont%</p></td></tr><tr><td colspan=\"1\" rowspan=\"1\"><p>%image:github%</p></td><td colspan=\"1\" rowspan=\"1\"><p>I2C library</p><p><a href=\"https://github.com/hibit-dev/mpu9250/raw/master/lib/I2C.zip\" target=\"_blank\" rel=\"noreferrer noopener\">Download here</a></p></td></tr></tbody></table><h2>Wiring schema</h2><p>Connect the power supply pins and SDA, SCL pins according to the connection diagram shown below.</p><p><img src=\"https://www.hibit.dev/images/posts/2023/schemas/arduino_mpu6050.png\" alt=\"arduino_mpu6050.png\"></p><p><em>Note: the module operates with 3.3 volts, although some versions have a regulator that allows to connect it to 5V. Make sure to check your module specification before using it.</em></p><h2>Relative orientation</h2><p>Relative orientation is the recovery of the position and orientation of one object relative to another. Depending on the direction there are three types of angular rate measurements:</p><ul><li><p><strong>Yaw</strong>: the horizontal rotation on a flat surface when seen the object from above.</p></li><li><p><strong>Pitch</strong>: vertical rotation as seen the object from front.</p></li><li><p><strong>Roll</strong>: horizontal rotation when seen the object from front.</p></li></ul><p>A graphical representation for each axis using a plane:</p><p><img src=\"https://www.hibit.dev/images/posts/2023/relative_orientation.png\" alt=\"relative orientation\"></p><p>Angles can not be directly extracted from MPU-9250 module but with correct formulas we can obtain them.</p><h3>Accelerometer angles</h3><p>Commonly, <em>g</em> is used as a unit for acceleration, relative to standard gravity (1g = 9.80665m/s<sup>2</sup>). Acceleration for perfectly aligned IMU will be 1g for Z axis. Terrestrial gravity and trigonometry allow to use the accelerometer readings and know the angle of inclination. The formulas to calculate the angles are:</p><blockquote><p>pitch = atan2(accelerometer_x, sqrt(accelerometer_y^2 + accelerometer_z^2))</p><p>roll = atan2(accelerometer_y, sqrt(accelerometer_x^2 + accelerometer_z^2))</p></blockquote><p>You can not obtain yaw angles from accelerometer because yaw motions occur in a plane and so no matter what X and Y readings you have.</p><h3>Gyroscope angles</h3><p>The gyroscope measures the angular velocity, i.e., the number of degrees rotated in a unit of time. Having initial angle of the IMU, angular velocity and the time passed between samples, we can know the angle change. It's very similar to linear speed, that multiplied by time give us the total distance passed. The formulas to calculate the angles are:</p><blockquote><p>pitch = pitch + gyroscope_x * elapsed_time</p><p>roll = roll + gyroscope_y * elapsed_time</p><p>yaw = yaw + gyroscope_z * elapsed_time</p></blockquote><p>Where elapsed time is the time interval between samples. The Z axis is usually ignored, since we don't have yaw angle from accelerometer and we can not rely only on gyroscope sensor.</p><h3>Noise and errors</h3><p>In the ideal word, sensors data with applied formulas would provide us precise and exact angles. The reality is different as some factors affect the sensors output.</p><p>Typically, when you move around with an accelerometer it experiences movement accelerations. Additional acceleration values may affect the orientation accuracy. Another accelerometer related problem is the noise: unwanted disturbance in an electrical signal. The accelerometer is able to measure any angle, however its readings are noisy and have a certain margin of error even with a low pass filter.</p><p>On the other hand, gyroscopes are subject to bias instabilities, in which the initial zero reading of the gyroscope will cause drift over time due to integration of inherent imperfections and noise within the device.</p><p>So, what can we do? There are different algorithms to solve this problems. The one we are going to use is known as complementary filter. Idea behind complementary filter is to take slow moving signals from accelerometer and fast moving signals from a gyroscope and combine them. It is ideal to implement with Arduino: easy to use, low cost of processing and good precision.</p><h3>Complementary filters</h3><p>The complementary filter can be thought of as a union of two different filters: a high-pass filter for the gyroscope and a low-pass filter for the accelerometer. The first lets only pass the values ​​above a certain limit, unlike the low-pass filter, which only allows those below.</p><p>Accelerometer gives a good indicator of orientation in static conditions and gyroscope gives a good indicator of tilt in dynamic conditions. The formula resulting from combining the two filters is:</p><blockquote><p>angle = (1 - α) * (angle + gyroscope * dt) + α * accelerometer</p></blockquote><p>A common value for α is 0.98, which means that 98% of the weight lays on the gyroscope measurements.</p><blockquote><p>pitch = 0.98 *<em> (pitch + gyroscope_x </em>* <em>dt) + </em>0.02* accelerometer_x</p><p>roll = 0.98 *<em> (</em>roll<em> + gyroscope_y </em>* <em>dt) + </em>0.02* accelerometer_y</p></blockquote><p>As the data changes very rapidly we can sample for some amount of time and take the average for more precise results.</p><h2>Install Arduino library for I2C</h2><p>We will use I2C protocol to interact with registers and read/write data. The I2C library provides a very simple interface for that purpose and can be reused in other projects that use I2C protocol. It can be downloaded from our <a href=\"https://github.com/hibit-dev/mpu6050/raw/master/lib/I2C.zip\" target=\"_blank\" rel=\"noreferrer noopener\">official repository</a>.</p><p>To import a library, open the Arduino IDE, go to Sketch &gt; Include Library &gt; Add .ZIP Library and select the library file downloaded from our GitHub repository.</p><p><img src=\"https://www.hibit.dev/images/posts/2023/arduino_import_library.png\" alt=\"arduino_import_library.png\"></p><p>Then you can simply use <em>include</em> statement:</p><pre>#include \"I2C.h\"</pre><p>It will include the library with predefined functions to interact with registers.</p><h2>Arduino code</h2><p>We are going to reuse most of the code generated from the raw sensors reading. To be more specific, everything related with data reading and normalization, together with defined structs.</p><blockquote><p>The sampling theorem states that a real signal which is band-limited to f HZ can be reconstructed without error from samples taken uniformly at a rate R &gt; 2f. So, it's important to choose an output rate that will be at least two times the DLPF, otherwise the data will be corrupted (aliased).</p></blockquote><p>A new structure has been defined, called <em>angle</em>, to represent object position. Make sure to follow the previous step and import I2C library in order to use it with the <em>include</em> statement:</p><pre>#include \"Wire.h\"<br>#include \"I2C.h\"<br><br>#define MPU6050_IMU_ADDRESS 0x68<br><br>#define GYRO_FULL_SCALE_250_DPS  0x00<br>#define GYRO_FULL_SCALE_500_DPS  0x08<br>#define GYRO_FULL_SCALE_1000_DPS 0x10<br>#define GYRO_FULL_SCALE_2000_DPS 0x18<br><br>#define ACC_FULL_SCALE_2G  0x00<br>#define ACC_FULL_SCALE_4G  0x08<br>#define ACC_FULL_SCALE_8G  0x10<br>#define ACC_FULL_SCALE_16G 0x18<br><br>#define TEMPERATURE_OFFSET 21 // As defined in documentation<br><br>#define INTERVAL_MS_PRINT 1000<br><br>#define G 9.80665<br><br>struct gyroscope_raw {<br>  int16_t x, y, z;<br>} gyroscope;<br><br>struct accelerometer_raw {<br>  int16_t x, y, z;<br>} accelerometer;<br><br>struct temperature_raw {<br>  int16_t value;<br>} temperature;<br><br>struct {<br>  struct {<br>    float x, y, z;<br>  } accelerometer, gyroscope;<br><br>  float temperature;<br>} normalized;<br><br>struct angle {<br>  float x, y, z = 0;<br>};<br><br>angle position;<br><br>unsigned long lastPrintMillis = 0;<br>unsigned long lastSampleMicros = 0;<br><br>void setup()<br>{<br>  Wire.begin();<br>  Serial.begin(115200);<br><br>  // Data Output Rate = 1000 / (1 + SRD)<br>  // Output rate must be at least 2x DLPF rate<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 25, 0x01); // Set the SRD to 1<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 26, 0x01); // Set the DLPF to 184HZ by default<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 27, GYRO_FULL_SCALE_1000_DPS); // Configure gyroscope range<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 28, ACC_FULL_SCALE_2G); // Configure accelerometer range<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 56, 0x01); // Enable interrupt pin for raw data<br>}<br><br>void loop()<br>{<br>  unsigned long currentMillis = millis();<br><br>  readSample();<br><br>  if (currentMillis - lastPrintMillis &gt; INTERVAL_MS_PRINT) {<br>    Serial.print(\"TEMP:\\\\t\");<br>    Serial.print(normalized.temperature, 2);<br>    Serial.print(\"\\\\xC2\\\\xB0\"); //Print degree symbol<br>    Serial.print(\"C\");<br>    Serial.println();<br><br>    Serial.print(\"Pitch:\\\\t\");<br>    Serial.print(getPitch());<br>    Serial.print(\"\\\\xC2\\\\xB0\"); //Print degree symbol<br>    Serial.println();<br><br>    Serial.print(\"Roll:\\\\t\");<br>    Serial.print(getRoll());<br>    Serial.print(\"\\\\xC2\\\\xB0\"); //Print degree symbol<br>    Serial.println();<br><br>    Serial.println();<br><br>    lastPrintMillis = currentMillis;<br>  }<br>}<br><br>bool readSample()<br>{<br>  if (isImuReady() == false) {<br>    return false;<br>  }<br><br>  unsigned long sampleMicros = (lastSampleMicros &gt; 0) ? micros() - lastSampleMicros : 0;<br><br>  lastSampleMicros = micros();<br><br>  readRawImu();<br><br>  normalize(gyroscope);<br>  normalize(accelerometer);<br>  normalize(temperature);<br><br>  angle accelerometer = calculateAccelerometerAngles();<br>  angle gyroscope = calculateGyroscopeAngles(sampleMicros);<br><br>  detectPitch(gyroscope, accelerometer);<br>  detectRoll(gyroscope, accelerometer);<br><br>  return true;<br>}</pre><p><em>Note: the snippet is part of Arduino project located in our GitHub </em><a href=\"https://github.com/hibit-dev/mpu6050/tree/master/src/complementary_filter\" target=\"_blank\" rel=\"noreferrer noopener\"><em>repository</em></a><em> with the code separated in different logical files.</em></p><h2>Testing</h2><p>The serial monitor will print latest available sensors data every <em>INTERVAL_MS_PRINT</em> milliseconds (in the example above, once per second) and it should be similar to:</p><p><img src=\"https://www.hibit.dev/images/posts/2023/complementary_filter_testing.png\" alt=\"complementary filter testing output\"></p><p>Usually the orientation is drawn on the physical module so you can easily detect pitch and roll.</p><h2>Credits</h2><p>Official GitHub: <a href=\"https://github.com/hibit-dev/mpu6050\" target=\"_blank\" rel=\"noreferrer noopener\">https://github.com/hibit-dev/mpu6050</a></p>",
+          "url": "https://www.hibit.dev/posts/92/complementary-filter-and-relative-orientation-with-mpu6050"
+        }
+    </script>
+</head>
+<body>
+    <div id="preloader"></div>
+
+    <header id="header" class="header fixed-top d-print-none" data-scrollto-offset="0">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+    <a href="https://www.hibit.dev" class="logo d-flex align-items-center scrollto me-auto me-lg-0">
+        <img src="https://cdn.hibit.dev/images/logo_colored_small.png" alt="Logo" width="148" height="40">
+    </a>
+
+    <nav id="navbar" class="navbar">
+        <ul>
+            <li><a href="https://www.hibit.dev/services/web-development" class="">Web Development</a></li>
+            <li><a href="https://www.hibit.dev/categories/popular" class="">Popular</a></li>
+            <li><a href="https://www.hibit.dev/blog" class="">Blog</a></li>
+            <li class="dropdown megamenu">
+                <a href="javascript:{}" class="active"><span>Categories</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+                <ul>
+                                            <li>
+                                                            <a href="https://www.hibit.dev/categories/news" class="">News</a>
+                                                            <a href="https://www.hibit.dev/categories/projects" class="">Projects</a>
+                                                            <a href="https://www.hibit.dev/categories/management" class="">Management</a>
+                                                            <a href="https://www.hibit.dev/categories/uiux" class="">UI/UX</a>
+                                                    </li>
+                                            <li>
+                                                            <a href="https://www.hibit.dev/categories/development" class="">Development</a>
+                                                            <a href="https://www.hibit.dev/categories/systems" class="">Systems</a>
+                                                            <a href="https://www.hibit.dev/categories/electronics" class="active">Electronics</a>
+                                                            <a href="https://www.hibit.dev/categories/uncategorized" class="">Other</a>
+                                                    </li>
+                                    </ul>
+            </li>
+                            <li><a href="https://www.hibit.dev/login" class="">Login</a></li>
+                <li class="d-sm-none"><a href="https://www.hibit.dev/registration" class="">Register</a></li>
+                                </ul>
+                    <i class="bi bi-search mobile-search-toggle d-none" onclick="goTo('#sidebar')"></i>
+                        <i id="mobile-nav-toggle-icon" class="bi bi-list mobile-nav-toggle d-none"></i>
+    </nav>
+
+            <a class="btn-getstarted d-none d-sm-flex" href="https://www.hibit.dev/registration">Create Account</a>
+        </div>
+    </header>
+    <main id="main">
+            <div class="breadcrumbs d-print-none">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Electronics</h1>
+
+                    </div>
+    </div>
+</div>
+
+    <section id="blog" class="blog">
+        <div class="container">
+            <div class="row gy-5 gx-lg-5">
+                <div class="col-lg-8 blog-details">
+                    
+                    
+                    
+                    <article id="post-92">
+                        <h2 class="title" id="post-title">Complementary filter and relative orientation with MPU6050</h2>
+
+                        <div class="meta-top">
+    <ul>
+        <li>
+            <img data-src="/images/avatar_hibit.png" width="20" height="20" alt="avatar" loading="lazy">
+            <a href="https://www.hibit.dev/users/HiBit" class="color-gray" rel="author">HiBit</a>
+        </li>
+        <li><i class="bi bi-clock"></i> <time datetime="2023-02-20 10:00:08">2023-02-20<span class="d-none d-sm-inline"> at 10:00</span></time></li>
+                                </ul>
+</div>
+<div class="meta-top d-print-none">
+    <ul>
+        <li>
+            <i class="bi bi-eye"></i> 1.3K Views                                                </li>
+                    <li><i class="bi bi-hand-thumbs-up"></i> 1 Like</li>
+                                    <li><i class="bi bi-clock-history"></i> 12 mins<span class="d-none d-sm-inline"> read</span></li>
+            </ul>
+</div>
+
+                        <div id="post-content" class="content color-secondary-dark">
+                            <p>The MPU-60X0 is the world's first integrated 6-axis MotionTracking device that combines a 3-axis gyroscope, 3-axis accelerometer and a Digital Motion Processor (DMP) all in a small package. It helps to measure velocity, orientation, acceleration, displacement and other motion like features</p><p>The MPU-6050 features three 16-bit analog-to-digital converters (ADCs) for digitizing the gyroscope outputs and three 16-bit ADCs for digitizing the accelerometer outputs. For precision tracking of both fast and slow motions, the parts feature a user-programmable gyroscope full-scale range and a user-programmable accelerometer full-scale range.</p><p>The MPU-6050 is a high performance accelerometer, gyroscope and magnetometer option for use in applications such as gesture recognition, self-balancing robots, cell phones, fitness monitoring and similar applications where detection of movement direction and magnitude along with rotation is desired. In <a href="https://www.hibit.dev/posts/90/complementary-filter-and-relative-orientation-with-mpu6050" target="_blank" rel="noreferrer noopener">reading MPU6050 sensors with Arduino</a> article we've introduced the module and how to interact with it, now we will see how to use extracted data and get relative orientation.</p><h2>Components</h2><div class="table-responsive"><table class="table table-sm text-nowrap"><tbody><tr><td colspan="1" rowspan="1"><p><img data-src="https://cdn.hibit.dev/images/products/arduino_nano.png?width=120&height=120&fmt=webp" alt="arduino-nano" width="80" height="80"></p></td><td colspan="1" rowspan="1" width="100%"><p>1x Arduino Nano (<em>or another Arduino module)</em></p><p><em>Available on</em>: <a href="https://www.hibit.dev/redirect/product/ebay-arduino-nano" target="_blank" rel="nofollow">Ebay</a> | <a href="https://www.hibit.dev/redirect/product/banggood-arduino-nano" target="_blank" rel="nofollow">Banggood</a> | <a href="https://www.hibit.dev/redirect/product/aliexpress-arduino-nano" target="_blank" rel="nofollow">Aliexpress</a></p></td></tr><tr><td colspan="1" rowspan="1"><p><img data-src="https://cdn.hibit.dev/images/products/mini_breadboard.png?width=120&height=120&fmt=webp" alt="mini-breadboard" width="80" height="80"></p></td><td colspan="1" rowspan="1"><p>1x Mini Breadboard</p><p><em>Available on</em>: <a href="https://www.hibit.dev/redirect/product/ebay-mini-breadboard" target="_blank" rel="nofollow">Ebay</a> | <a href="https://www.hibit.dev/redirect/product/banggood-mini-breadboard" target="_blank" rel="nofollow">Banggood</a> | <a href="https://www.hibit.dev/redirect/product/aliexpress-mini-breadboard" target="_blank" rel="nofollow">Aliexpress</a></p></td></tr><tr><td colspan="1" rowspan="1"><p><img data-src="https://cdn.hibit.dev/images/products/mpu6050.png?width=120&height=120&fmt=webp" alt="mpu6050" width="80" height="80"></p></td><td colspan="1" rowspan="1"><p>1x MPU6050</p><p><em>Available on</em>: <a href="https://www.hibit.dev/redirect/product/ebay-mpu6050" target="_blank" rel="nofollow">Ebay</a> | <a href="https://www.hibit.dev/redirect/product/banggood-mpu6050" target="_blank" rel="nofollow">Banggood</a> | <a href="https://www.hibit.dev/redirect/product/aliexpress-mpu6050" target="_blank" rel="nofollow">Aliexpress</a></p></td></tr><tr><td colspan="1" rowspan="1"><p><img data-src="https://cdn.hibit.dev/images/products/dupont.png?width=120&height=120&fmt=webp" alt="dupont" width="80" height="80"></p></td><td colspan="1" rowspan="1"><p>Dupont wires</p><p><em>Available on</em>: <a href="https://www.hibit.dev/redirect/product/ebay-dupont" target="_blank" rel="nofollow">Ebay</a> | <a href="https://www.hibit.dev/redirect/product/banggood-dupont" target="_blank" rel="nofollow">Banggood</a> | <a href="https://www.hibit.dev/redirect/product/aliexpress-dupont" target="_blank" rel="nofollow">Aliexpress</a></p></td></tr><tr><td colspan="1" rowspan="1"><p><img data-src="https://cdn.hibit.dev/images/products/github.png?width=120&height=120&fmt=webp" alt="github" width="80" height="80"></p></td><td colspan="1" rowspan="1"><p>I2C library</p><p><a href="https://github.com/hibit-dev/mpu9250/raw/master/lib/I2C.zip" target="_blank" rel="noreferrer noopener">Download here</a></p></td></tr></tbody></table></div><h2>Wiring schema</h2><p>Connect the power supply pins and SDA, SCL pins according to the connection diagram shown below.</p><p><img loading="lazy" data-src="https://www.hibit.dev/images/posts/2023/schemas/arduino_mpu6050.png" alt="arduino_mpu6050.png"></p><p><em>Note: the module operates with 3.3 volts, although some versions have a regulator that allows to connect it to 5V. Make sure to check your module specification before using it.</em></p><h2>Relative orientation</h2><p>Relative orientation is the recovery of the position and orientation of one object relative to another. Depending on the direction there are three types of angular rate measurements:</p><ul><li><p><strong>Yaw</strong>: the horizontal rotation on a flat surface when seen the object from above.</p></li><li><p><strong>Pitch</strong>: vertical rotation as seen the object from front.</p></li><li><p><strong>Roll</strong>: horizontal rotation when seen the object from front.</p></li></ul><p>A graphical representation for each axis using a plane:</p><p><img loading="lazy" data-src="https://www.hibit.dev/images/posts/2023/relative_orientation.png" alt="relative orientation"></p><p>Angles can not be directly extracted from MPU-9250 module but with correct formulas we can obtain them.</p><h3>Accelerometer angles</h3><p>Commonly, <em>g</em> is used as a unit for acceleration, relative to standard gravity (1g = 9.80665m/s<sup>2</sup>). Acceleration for perfectly aligned IMU will be 1g for Z axis. Terrestrial gravity and trigonometry allow to use the accelerometer readings and know the angle of inclination. The formulas to calculate the angles are:</p><blockquote><p>pitch = atan2(accelerometer_x, sqrt(accelerometer_y^2 + accelerometer_z^2))</p><p>roll = atan2(accelerometer_y, sqrt(accelerometer_x^2 + accelerometer_z^2))</p></blockquote><p>You can not obtain yaw angles from accelerometer because yaw motions occur in a plane and so no matter what X and Y readings you have.</p><h3>Gyroscope angles</h3><p>The gyroscope measures the angular velocity, i.e., the number of degrees rotated in a unit of time. Having initial angle of the IMU, angular velocity and the time passed between samples, we can know the angle change. It's very similar to linear speed, that multiplied by time give us the total distance passed. The formulas to calculate the angles are:</p><blockquote><p>pitch = pitch + gyroscope_x * elapsed_time</p><p>roll = roll + gyroscope_y * elapsed_time</p><p>yaw = yaw + gyroscope_z * elapsed_time</p></blockquote><p>Where elapsed time is the time interval between samples. The Z axis is usually ignored, since we don't have yaw angle from accelerometer and we can not rely only on gyroscope sensor.</p><h3>Noise and errors</h3><p>In the ideal word, sensors data with applied formulas would provide us precise and exact angles. The reality is different as some factors affect the sensors output.</p><p>Typically, when you move around with an accelerometer it experiences movement accelerations. Additional acceleration values may affect the orientation accuracy. Another accelerometer related problem is the noise: unwanted disturbance in an electrical signal. The accelerometer is able to measure any angle, however its readings are noisy and have a certain margin of error even with a low pass filter.</p><p>On the other hand, gyroscopes are subject to bias instabilities, in which the initial zero reading of the gyroscope will cause drift over time due to integration of inherent imperfections and noise within the device.</p><p>So, what can we do? There are different algorithms to solve this problems. The one we are going to use is known as complementary filter. Idea behind complementary filter is to take slow moving signals from accelerometer and fast moving signals from a gyroscope and combine them. It is ideal to implement with Arduino: easy to use, low cost of processing and good precision.</p><h3>Complementary filters</h3><p>The complementary filter can be thought of as a union of two different filters: a high-pass filter for the gyroscope and a low-pass filter for the accelerometer. The first lets only pass the values ​​above a certain limit, unlike the low-pass filter, which only allows those below.</p><p>Accelerometer gives a good indicator of orientation in static conditions and gyroscope gives a good indicator of tilt in dynamic conditions. The formula resulting from combining the two filters is:</p><blockquote><p>angle = (1 - α) * (angle + gyroscope * dt) + α * accelerometer</p></blockquote><p>A common value for α is 0.98, which means that 98% of the weight lays on the gyroscope measurements.</p><blockquote><p>pitch = 0.98 *<em> (pitch + gyroscope_x </em>* <em>dt) + </em>0.02* accelerometer_x</p><p>roll = 0.98 *<em> (</em>roll<em> + gyroscope_y </em>* <em>dt) + </em>0.02* accelerometer_y</p></blockquote><p>As the data changes very rapidly we can sample for some amount of time and take the average for more precise results.</p><h2>Install Arduino library for I2C</h2><p>We will use I2C protocol to interact with registers and read/write data. The I2C library provides a very simple interface for that purpose and can be reused in other projects that use I2C protocol. It can be downloaded from our <a href="https://github.com/hibit-dev/mpu6050/raw/master/lib/I2C.zip" target="_blank" rel="noreferrer noopener">official repository</a>.</p><p>To import a library, open the Arduino IDE, go to Sketch &gt; Include Library &gt; Add .ZIP Library and select the library file downloaded from our GitHub repository.</p><p><img loading="lazy" data-src="https://www.hibit.dev/images/posts/2023/arduino_import_library.png" alt="arduino_import_library.png"></p><p>Then you can simply use <em>include</em> statement:</p><pre>#include "I2C.h"</pre><p>It will include the library with predefined functions to interact with registers.</p><h2>Arduino code</h2><p>We are going to reuse most of the code generated from the raw sensors reading. To be more specific, everything related with data reading and normalization, together with defined structs.</p><blockquote><p>The sampling theorem states that a real signal which is band-limited to f HZ can be reconstructed without error from samples taken uniformly at a rate R &gt; 2f. So, it's important to choose an output rate that will be at least two times the DLPF, otherwise the data will be corrupted (aliased).</p></blockquote><p>A new structure has been defined, called <em>angle</em>, to represent object position. Make sure to follow the previous step and import I2C library in order to use it with the <em>include</em> statement:</p><pre>#include "Wire.h"<br>#include "I2C.h"<br><br>#define MPU6050_IMU_ADDRESS 0x68<br><br>#define GYRO_FULL_SCALE_250_DPS  0x00<br>#define GYRO_FULL_SCALE_500_DPS  0x08<br>#define GYRO_FULL_SCALE_1000_DPS 0x10<br>#define GYRO_FULL_SCALE_2000_DPS 0x18<br><br>#define ACC_FULL_SCALE_2G  0x00<br>#define ACC_FULL_SCALE_4G  0x08<br>#define ACC_FULL_SCALE_8G  0x10<br>#define ACC_FULL_SCALE_16G 0x18<br><br>#define TEMPERATURE_OFFSET 21 // As defined in documentation<br><br>#define INTERVAL_MS_PRINT 1000<br><br>#define G 9.80665<br><br>struct gyroscope_raw {<br>  int16_t x, y, z;<br>} gyroscope;<br><br>struct accelerometer_raw {<br>  int16_t x, y, z;<br>} accelerometer;<br><br>struct temperature_raw {<br>  int16_t value;<br>} temperature;<br><br>struct {<br>  struct {<br>    float x, y, z;<br>  } accelerometer, gyroscope;<br><br>  float temperature;<br>} normalized;<br><br>struct angle {<br>  float x, y, z = 0;<br>};<br><br>angle position;<br><br>unsigned long lastPrintMillis = 0;<br>unsigned long lastSampleMicros = 0;<br><br>void setup()<br>{<br>  Wire.begin();<br>  Serial.begin(115200);<br><br>  // Data Output Rate = 1000 / (1 + SRD)<br>  // Output rate must be at least 2x DLPF rate<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 25, 0x01); // Set the SRD to 1<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 26, 0x01); // Set the DLPF to 184HZ by default<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 27, GYRO_FULL_SCALE_1000_DPS); // Configure gyroscope range<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 28, ACC_FULL_SCALE_2G); // Configure accelerometer range<br>  I2CwriteByte(MPU6050_IMU_ADDRESS, 56, 0x01); // Enable interrupt pin for raw data<br>}<br><br>void loop()<br>{<br>  unsigned long currentMillis = millis();<br><br>  readSample();<br><br>  if (currentMillis - lastPrintMillis &gt; INTERVAL_MS_PRINT) {<br>    Serial.print("TEMP:\\t");<br>    Serial.print(normalized.temperature, 2);<br>    Serial.print("\\xC2\\xB0"); //Print degree symbol<br>    Serial.print("C");<br>    Serial.println();<br><br>    Serial.print("Pitch:\\t");<br>    Serial.print(getPitch());<br>    Serial.print("\\xC2\\xB0"); //Print degree symbol<br>    Serial.println();<br><br>    Serial.print("Roll:\\t");<br>    Serial.print(getRoll());<br>    Serial.print("\\xC2\\xB0"); //Print degree symbol<br>    Serial.println();<br><br>    Serial.println();<br><br>    lastPrintMillis = currentMillis;<br>  }<br>}<br><br>bool readSample()<br>{<br>  if (isImuReady() == false) {<br>    return false;<br>  }<br><br>  unsigned long sampleMicros = (lastSampleMicros &gt; 0) ? micros() - lastSampleMicros : 0;<br><br>  lastSampleMicros = micros();<br><br>  readRawImu();<br><br>  normalize(gyroscope);<br>  normalize(accelerometer);<br>  normalize(temperature);<br><br>  angle accelerometer = calculateAccelerometerAngles();<br>  angle gyroscope = calculateGyroscopeAngles(sampleMicros);<br><br>  detectPitch(gyroscope, accelerometer);<br>  detectRoll(gyroscope, accelerometer);<br><br>  return true;<br>}</pre><p><em>Note: the snippet is part of Arduino project located in our GitHub </em><a href="https://github.com/hibit-dev/mpu6050/tree/master/src/complementary_filter" target="_blank" rel="noreferrer noopener"><em>repository</em></a><em> with the code separated in different logical files.</em></p><h2>Testing</h2><p>The serial monitor will print latest available sensors data every <em>INTERVAL_MS_PRINT</em> milliseconds (in the example above, once per second) and it should be similar to:</p><p><img loading="lazy" data-src="https://www.hibit.dev/images/posts/2023/complementary_filter_testing.png" alt="complementary filter testing output"></p><p>Usually the orientation is drawn on the physical module so you can easily detect pitch and roll.</p><h2>Credits</h2><p>Official GitHub: <a href="https://github.com/hibit-dev/mpu6050" target="_blank" rel="noreferrer noopener">https://github.com/hibit-dev/mpu6050</a></p>                        </div>
+
+                        <div class="meta-bottom d-print-none" id="post-meta-bottom">
+            <div class="d-flex align-items-start mb-3">
+                            <a href="javascript:{}" class="btn btn-sm btn-success btn-bounce text-white text-nowrap margin-right-10" onclick="document.getElementById('post-fixed-like-92').submit();">
+                    <i class="bi bi-hand-thumbs-up-fill text-white"></i> Like                </a>
+                                        <a href="javascript:{}" id="bookmark-button" class="btn btn-sm btn-bookmark btn-bounce text-white text-nowrap margin-right-10" onclick="document.getElementById('post-add-bookmark-92').submit();">
+                    <i class="bi bi-bookmark-plus-fill text-white"></i> Add bookmark                </a>
+                <form action="https://www.hibit.dev/bookmarks" method="POST" class="visually-hidden" id="post-add-bookmark-92">
+                    <input type="hidden" name="_token" value="osrVQGPmIRWhgTl5hW7tlyHybBPxycBVk7E4FjwC">                    <div id="hp_Cmmc4qQmWl81BeUv_wrap" class="d-none" aria-hidden="true">
+        <input name="hp_Cmmc4qQmWl81BeUv" type="text" value="" id="hp_Cmmc4qQmWl81BeUv" autocomplete="nope" tabindex="-1">
+        <input name="hp_vf" type="text" value="eyJpdiI6Ijg0Uk9kbVF3c1pyTlE4Y3dYcld4Y0E9PSIsInZhbHVlIjoiN1l5VnFZb1pUdmd3VW10Y1ZsMkRTUT09IiwibWFjIjoiZWE1NjM4M2M2MTZiNzM2Yzg0ZmE4MDQ5N2Y0ZmQxNDM4OTdjNmVjOWVkZGMwMzg4MjJlNzY3OWE5Nzg5MzJiNiIsInRhZyI6IiJ9" autocomplete="nope" tabindex="-1">
+    </div>
+
+                    <input type="hidden" name="post_id" value="92">
+                </form>
+                        <a href="javascript:{}" id="share-button" class="btn btn-sm btn-share text-white text-nowrap margin-right-10 d-none">
+                <i class="bi bi-send-fill text-white"></i> Share            </a>
+
+            <div class="addthis_inline_share_toolbox flex-grow-1"></div>
+        </div>
+
+        <script type="text/javascript">
+    const sharePostButton = document.getElementById('share-button');
+    const bookmarkPostButton = document.getElementById('bookmark-button');
+    window.addEventListener('load', () => {
+        if (navigator.share) {
+            sharePostButton.classList.remove('d-none');
+            bookmarkPostButton.classList.add('d-none');
+
+            sharePostButton.addEventListener('click', function() {
+                navigator.share({
+                    title: 'Complementary filter and relative orientation with MPU6050',
+                    url: 'https://www.hibit.dev/posts/92/complementary-filter-and-relative-orientation-with-mpu6050?utm_source=hibit&utm_medium=share&utm_campaign=button'
+                }).then(() => {
+                    console.log('Thanks for sharing!');
+                }).catch(console.error);
+            });
+        }
+    });
+</script>
+    
+    <i class="bi bi-folder"></i>
+    <ul class="cats">
+        <li><a target="_blank" href="https://www.hibit.dev/categories/electronics">Electronics</a></li>
+    </ul>
+
+    <i class="bi bi-tags"></i>
+    <ul class="tags">
+        <li><a target="_blank" href="https://www.hibit.dev/tags/arduino" rel="tag">arduino</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/nano" rel="tag">nano</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/wiring" rel="tag">wiring</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/i2c" rel="tag">i2c</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/schema" rel="tag">schema</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/serial" rel="tag">serial</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/circuit" rel="tag">circuit</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/mpu" rel="tag">mpu</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/accelerometer" rel="tag">accelerometer</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/gyroscope" rel="tag">gyroscope</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/gyro" rel="tag">gyro</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/sensor" rel="tag">sensor</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/temperature" rel="tag">temperature</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/imu" rel="tag">imu</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/mpu6500" rel="tag">mpu6500</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/magnetometer" rel="tag">magnetometer</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/motion" rel="tag">motion</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/orientation" rel="tag">orientation</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/mpu6050" rel="tag">mpu6050</a></li><li><a target="_blank" href="https://www.hibit.dev/tags/6dof" rel="tag">6dof</a></li>    </ul>
+</div>                    </article>
+
+                    <div id="post-author" class="post-author d-flex flex-column flex-md-row align-items-center d-print-none">
+    <img data-src="/images/avatar_hibit.png" class="flex-shrink-0" loading="lazy" alt="avatar">
+    <div class="text-center text-md-start">
+        <h3 class="d-inline mt-0">Published by <b>HiBit</b></h3>
+        <span class="badge rounded-pill bg-success margin-left-5 align-text-top"><i class="bi bi-stars icon"></i> 312</span>
+        <div class="social-links">
+            <a target="_blank" href="https://www.facebook.com/hibitdev"><i class="bi bi-facebook"></i><span class="visually-hidden">facebook</span></a>
+    <a target="_blank" href="https://twitter.com/hibit_dev"><i class="bi bi-twitter"></i><span class="visually-hidden">twitter</span></a>
+    <a target="_blank" href="https://www.instagram.com/hibit_dev"><i class="bi bi-instagram"></i><span class="visually-hidden">instagram</span></a>
+    <a target="_blank" href="https://github.com/hibit-dev"><i class="bi bi-github"></i><span class="visually-hidden">github</span></a>
+<a target="_blank" href="https://www.hibit.dev/rss/users/1/posts"><i class="bi bi-rss-fill"></i><span class="visually-hidden">rss</span></a>        </div>
+        <p>Creating interesting and useful content</p>
+    </div>
+    <div class="align-self-center mt-2 align-self-md-start ms-md-auto mt-md-0">
+        <a href="https://www.hibit.dev/users/HiBit" class="btn btn-sm btn-outline-secondary" rel="author">
+            <i class="bi bi-list-stars icon"></i> View Posts        </a>
+            </div>
+</div>
+
+                                            <div class="margin-top-30">
+                            <div class="blog-details blog-newsletter text-center d-print-none">
+    <div class="d-inline-flex flex-column">
+        <h2>
+            <i class="fa fa-envelope-o"></i>&nbsp;Join Our Monthly Newsletter        </h2>
+        <p>Get the latest news and popular articles to your inbox every month</p>
+        <form action="https://www.hibit.dev/subscribe" method="POST" role="form">
+            <input type="hidden" name="_token" value="osrVQGPmIRWhgTl5hW7tlyHybBPxycBVk7E4FjwC">            <div id="hp_rzl5zT633H8QwU7S_wrap" class="d-none" aria-hidden="true">
+        <input name="hp_rzl5zT633H8QwU7S" type="text" value="" id="hp_rzl5zT633H8QwU7S" autocomplete="nope" tabindex="-1">
+        <input name="hp_vf" type="text" value="eyJpdiI6InAwdkkwdUFqTzNqYkN3cjgvZE5CYUE9PSIsInZhbHVlIjoiQWNBS2N3TW5Dak5uc2JFUWEyQ2Q4Zz09IiwibWFjIjoiMjE0NWZkYmYzMWVhZDg1ODBiMTYyYWQ2NDVkYWRkM2M0MTY3ZmU4ODA3ZjI0NGRmN2IxMWY5MGM1ZWFmODA1MyIsInRhZyI6IiJ9" autocomplete="nope" tabindex="-1">
+    </div>
+
+            <input type="email" name="email" placeholder="Enter your email here">
+            <input type="submit" value="Subscribe">
+        </form>
+    </div>
+</div>
+
+                        </div>
+                    
+                    <div class="comments d-print-none" id="comments">
+                        <h3 class="comments-count">0 Comments</h3>
+
+                        
+                        
+                        <div class="reply-form gy-3" id="create-comment">
+    <h4>Leave a Reply</h4>
+    <p>Your email address will not be published.</p>
+
+    
+    <form action="https://www.hibit.dev/posts/92/comments?page=1#create-comment" method="POST">
+        <input type="hidden" name="_token" value="osrVQGPmIRWhgTl5hW7tlyHybBPxycBVk7E4FjwC">        <div id="hp_PhutElrFSceq7n6H_wrap" class="d-none" aria-hidden="true">
+        <input name="hp_PhutElrFSceq7n6H" type="text" value="" id="hp_PhutElrFSceq7n6H" autocomplete="nope" tabindex="-1">
+        <input name="hp_vf" type="text" value="eyJpdiI6InN0YmMyVEt5Z0k0U0tpdEYxR2VDVWc9PSIsInZhbHVlIjoicXlKdGdLSnZDSDk4VXRRUXRKeldMUT09IiwibWFjIjoiNzU4MjYxZGI2MjFmNDYyZjA4NzBiOTIwZWIwMmI0MDYwYjRkODc3YTYzNGUxMjFkNDc5OWVmNzliMjZhZmY2NCIsInRhZyI6IiJ9" autocomplete="nope" tabindex="-1">
+    </div>
+
+        
+                <div class="d-none col form-group content">
+            <p>
+                <a href="javascript:{}" class="unreply text-danger" onclick="unReplyComment()"><i class="bi bi-x"></i></a>
+                <b>Replying to message:</b>
+            </p>
+            <blockquote id="post-comment-reply-blockquote"></blockquote>
+        </div>
+
+
+                    <div class="col form-group">
+                <textarea name="message" class="form-control" placeholder="Comment" data-bs-toggle="modal" data-bs-target="#login-to-continue"></textarea>
+            </div>
+            <div class="modal fade" id="login-to-continue" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content padding-0">
+            <div class="modal-header">
+                <h5 class="modal-title">Log in to continue</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="https://cdn.hibit.dev/images/logo_colored_small.png" class="img-fluid" alt="colored logo">
+
+                <div class="col-xs-12 col-sm-10 offset-sm-1 mt-3">
+                    <p class="small">Communicate with authors and users. Provide them your feedback and collaborate with the community.</p>
+                </div>
+
+                <div class="d-flex align-self-center justify-content-center">
+                    <a href="https://www.hibit.dev/login" class="btn-secondary-action d-flex align-items-center"><span>Login</span></a>
+                    <a href="https://www.hibit.dev/registration" class="btn-main-action">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                <input type="hidden" name="parent_id" id="comment-reply-parent-id">
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+</div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 d-print-none">
+                    <div class="sidebar mb-4 bg-newsletter d-none d-lg-block">
+        <div class="sidebar-item form">
+            <h3 class="sidebar-title">Join Our Monthly Newsletter</h3>
+            <p class="mt-1 small">Get the latest news and popular articles to your inbox every month</p>
+            <form action="https://www.hibit.dev/subscribe" method="POST" role="form" class="mt-3">
+                <input type="hidden" name="_token" value="osrVQGPmIRWhgTl5hW7tlyHybBPxycBVk7E4FjwC">                <div id="hp_cdHabTHH8902945b_wrap" class="d-none" aria-hidden="true">
+        <input name="hp_cdHabTHH8902945b" type="text" value="" id="hp_cdHabTHH8902945b" autocomplete="nope" tabindex="-1">
+        <input name="hp_vf" type="text" value="eyJpdiI6IjVJcXJ6MFJ3Q09sb0lQdldmeEdCRkE9PSIsInZhbHVlIjoiZEgzMmVEdGVlM3g2ZTVZK3g3Q1ZSUT09IiwibWFjIjoiZjljNDVkNTM2Y2QzZDQ1NGU3NGRlYmRmNTFmN2ZhNTFlNmU2NzUzNTQzNDY5NTlmOTI3ODgyNTJjNjdiNWQ1NyIsInRhZyI6IiJ9" autocomplete="nope" tabindex="-1">
+    </div>
+
+                <input type="email" id="sidebar-registration-email" name="email" value="" placeholder="Enter your email here">
+                <button type="submit">Join</button>
+            </form>
+            <p class="text-muted smaller"><i class="bi bi-lock-fill" aria-hidden="true"></i> We never send SPAM nor unsolicited emails</p>
+        </div>
+    </div>
+<div class="sidebar sticky" id="sidebar">
+    <div class="sidebar-item form" id="sidebar-search">
+        <form action="https://www.hibit.dev/search" method="GET">
+            <input type="text" id="blog-search" name="q" placeholder="Search for..." value="">
+            <button type="submit" aria-label="Search for..."><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+
+    <div class="sidebar-item categories">
+        <h3 class="sidebar-title">Categories</h3>
+        <ul class="mt-3">
+                            <li>
+                    <a href="https://www.hibit.dev/categories/popular">
+                        Popular                                                    <span>(Recently published)</span>
+                                            </a>
+                </li>
+                            <li>
+                    <a href="https://www.hibit.dev/categories/news">
+                        News                                            </a>
+                </li>
+                            <li>
+                    <a href="https://www.hibit.dev/categories/development">
+                        Development                                            </a>
+                </li>
+                            <li>
+                    <a href="https://www.hibit.dev/categories/electronics">
+                        Electronics                                            </a>
+                </li>
+                            <li>
+                    <a href="https://www.hibit.dev/categories/systems">
+                        Systems                                            </a>
+                </li>
+                            <li>
+                    <a href="https://www.hibit.dev/categories/projects">
+                        Projects                                            </a>
+                </li>
+                            <li>
+                    <a href="https://www.hibit.dev/categories/management">
+                        Management                                            </a>
+                </li>
+                            <li>
+                    <a href="https://www.hibit.dev/categories/uiux">
+                        UI/UX                                            </a>
+                </li>
+                            <li>
+                    <a href="https://www.hibit.dev/categories/uncategorized">
+                        Other                                            </a>
+                </li>
+                    </ul>
+    </div>
+
+            <div class="sidebar-item recent-posts">
+            <h3 class="sidebar-title">You may also like</h3>
+            <div class="mt-3">
+                                    <div class="post-item mt-3">
+                                                    <img data-src="https://cdn.hibit.dev/images/posts/2022/headers/buzzer.png?width=80" class="d-none d-sm-inline-block" width="80" height="36" loading="lazy" alt="Preview post image">
+                                                <div>
+                            <h4><a rel="nofollow" href="https://www.hibit.dev/posts/62/playing-popular-songs-with-arduino-and-a-buzzer?utm_source=hibit&amp;utm_medium=sidebar&amp;utm_campaign=recommendation">Playing popular songs with Arduino and a buzzer</a></h4>
+                            <time datetime="2022-08-22 07:53:41">2022-08-22 at 07:53</time>
+                        </div>
+                    </div>
+                                    <div class="post-item mt-3">
+                                                    <img data-src="https://cdn.hibit.dev/images/posts/2022/headers/mpu9250.png?width=80" class="d-none d-sm-inline-block" width="80" height="36" loading="lazy" alt="Preview post image">
+                                                <div>
+                            <h4><a rel="nofollow" href="https://www.hibit.dev/posts/36/reading-mpu9250-sensors-with-arduino?utm_source=hibit&amp;utm_medium=sidebar&amp;utm_campaign=recommendation">Reading MPU9250 sensors with Arduino</a></h4>
+                            <time datetime="2022-02-16 13:35:34">2022-02-16 at 13:35</time>
+                        </div>
+                    </div>
+                                    <div class="post-item mt-3">
+                                                    <img data-src="https://cdn.hibit.dev/images/posts/2021/headers/nrf24l01_antena_adapter.png?width=80" class="d-none d-sm-inline-block" width="80" height="36" loading="lazy" alt="Preview post image">
+                                                <div>
+                            <h4><a rel="nofollow" href="https://www.hibit.dev/posts/22/how-to-use-the-nrf24l01-module-with-arduino?utm_source=hibit&amp;utm_medium=sidebar&amp;utm_campaign=recommendation">How to use the NRF24L01 module with Arduino</a></h4>
+                            <time datetime="2021-10-06 13:51:40">2021-10-06 at 13:51</time>
+                        </div>
+                    </div>
+                            </div>
+        </div>
+    
+    <div class="sidebar-item tags">
+        <h3 class="sidebar-title">Popular Tags</h3>
+        <ul class="mt-3">
+            <li><a rel="tag" href="https://www.hibit.dev/tags/buzzer">Buzzer</a></li>
+            <li><a rel="tag" href="https://www.hibit.dev/tags/laravel">Laravel</a></li>
+            <li><a rel="tag" href="https://www.hibit.dev/tags/ddd">DDD</a></li>
+            <li><a rel="tag" href="https://www.hibit.dev/tags/arduino">Arduino</a></li>
+            <li><a rel="tag" href="https://www.hibit.dev/tags/nrf24l01">NRF24L01</a></li>
+            <li><a rel="tag" href="https://www.hibit.dev/tags/mpu9250">MPU9250</a></li>
+            <li><a rel="tag" href="https://www.hibit.dev/tags/aircontrol">AirControl</a></li>
+        </ul>
+    </div>
+</div>
+                </div>
+            </div>
+        </div>
+                    <a href="javascript:{}" class="scroll-like-post animated-button-bounce d-flex align-items-center justify-content-center" onclick="document.getElementById('post-fixed-like-92').submit();" aria-label="Like post"><i class="bi bi-hand-thumbs-up-fill"></i></a>
+            <form action="https://www.hibit.dev/votes/posts/92" method="POST" class="visually-hidden" id="post-fixed-like-92">
+                <input type="hidden" name="_token" value="osrVQGPmIRWhgTl5hW7tlyHybBPxycBVk7E4FjwC">                <div id="hp_arM2U5spCYGWB0Ef_wrap" class="d-none" aria-hidden="true">
+        <input name="hp_arM2U5spCYGWB0Ef" type="text" value="" id="hp_arM2U5spCYGWB0Ef" autocomplete="nope" tabindex="-1">
+        <input name="hp_vf" type="text" value="eyJpdiI6Im9pek00bkZXU3NxK1FXamNFWGt0SFE9PSIsInZhbHVlIjoidnYzc2xFb3Q1VFZ0UlAwWFV6MEZZUT09IiwibWFjIjoiNGEwYWZiYTAxNDRkZTkyYzE2NjA3MzEyZTUxMDk3MDg1Zjk1NzljMTA4YjNjZTVjNGJlMmViZDIyMDBkMWFmYSIsInRhZyI6IiJ9" autocomplete="nope" tabindex="-1">
+    </div>
+            </form>
+            </section>
+    
+    <div class="position-fixed bottom-0 start-0 p-3 z-index">
+    <div id="ad_toast" data-id="ali" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="position-relative">
+            <a href="javascript:{}" class="btn-close btn-close-white position-absolute top-0 end-0 p-3" data-bs-dismiss="toast" aria-label="Close"></a>
+        </div>
+        <div class="toast-header p-0">
+            <img data-src="https://cdn.hibit.dev/images/ads/ali_hot_deals.jpg?width=348&height=196&fmt=webp" class="img-fluid rounded-top" alt="Hot Deals" loading="lazy">
+        </div>
+        <div class="toast-body p-3 bg-white rounded-bottom">
+            <h2>Incredible Hot Deals!</h2>
+            <p class="fs-6">Searching for the best deals online? Explore now and discover unbeatable discounts you won't find anywhere else!</p>
+            <a href="https://www.hibit.dev/redirect/product/aliexpress-hot-deals-toast" class="btn btn-lg btn-danger mt-2" target="_blank">
+                <i class="bi bi-box-arrow-in-up-right text-white small"></i> Shop Hot Deals Now            </a>
+        </div>
+    </div>
+</div>    </main>
+    <footer id="footer" class="footer d-print-none">
+        <div class="footer-content">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-2 col-sm-6 footer-links">
+                <div class="footer-links">
+                    <h4>My Account</h4>
+                    <ul>
+                                                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/login">Login</a></li>
+                            <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/registration">Register</a></li>
+                                                                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-sm-6 footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/categories/popular">Learning</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/services/web-development">Web Development</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/services/site-audit">Site Audit</a></li>
+                                    </ul>
+            </div>
+
+            <div class="col-lg-2 col-sm-6 footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/legal/terms-of-use">Terms of use</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/legal/privacy-policy">Privacy Policy</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/legal/cookies-policy">Cookies Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-sm-6 footer-links">
+                <h4>Information</h4>
+                <ul>
+                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/about">About us</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/advertising">Advertising</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="https://www.hibit.dev/contact">Contact us</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 footer-newsletter">
+                <h4>Our Newsletter</h4>
+                <p>Get the latest news and popular articles to your inbox every month</p>
+                <form action="https://www.hibit.dev/subscribe" method="POST">
+                    <input type="hidden" name="_token" value="osrVQGPmIRWhgTl5hW7tlyHybBPxycBVk7E4FjwC">                    <div id="hp_lWw5H2toLWUUy9wC_wrap" class="d-none" aria-hidden="true">
+        <input name="hp_lWw5H2toLWUUy9wC" type="text" value="" id="hp_lWw5H2toLWUUy9wC" autocomplete="nope" tabindex="-1">
+        <input name="hp_vf" type="text" value="eyJpdiI6InR1VWNBdFhmSUtGMUFPWE5iekhGaXc9PSIsInZhbHVlIjoiT2dkYzhCMS91VkNxelZlbUwvMWtxdz09IiwibWFjIjoiNjljZTM5YTQ5YmNkODNhYTk2Y2YzYWVkNTNiMmYzZjYxZWNmYmFmMjgxNGFjNjQxN2FhY2IyMjBlZTIzODY5OSIsInRhZyI6IiJ9" autocomplete="nope" tabindex="-1">
+    </div>
+
+                    <input type="email" name="email" placeholder="Enter your email here">
+                    <input type="submit" value="Subscribe">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer-legal text-center">
+    <div class="container d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center">
+        <div class="d-flex flex-column align-items-center align-items-lg-start">
+            <div class="copyright">
+                &copy; 2020-2023 <strong><span>HiBit</span></strong>. All rights reserved.
+            </div>
+        </div>
+
+        <div class="social-links order-first order-lg-last mb-3 mb-lg-0" itemscope itemtype="http://schema.org/Organization">
+            <link itemprop="name" href="HiBit">
+            <link itemprop="url" href="https://www.hibit.dev">
+            <link itemprop="logo" href="https://cdn.hibit.dev/images/favicon.png">
+            <a target="_blank" itemprop="sameAs" rel="external" href="https://www.facebook.com/hibitdev"><i class="bi bi-facebook"><span class="visually-hidden">facebook</span></i></a>
+            <a target="_blank" itemprop="sameAs" rel="external" href="https://twitter.com/hibit_dev"><i class="bi bi-twitter"><span class="visually-hidden">twitter</span></i></a>
+            <a target="_blank" itemprop="sameAs" rel="external" href="https://www.instagram.com/hibit_dev"><i class="bi bi-instagram"><span class="visually-hidden">instagram</span></i></a>
+            <a target="_blank" itemprop="sameAs" rel="external" href="https://github.com/hibit-dev"><i class="bi bi-github"><span class="visually-hidden">github</span></i></a>
+            <a target="_blank" itemprop="sameAs" rel="external" href="https://www.youtube.com/@hibitdev"><i class="bi bi-youtube"><span class="visually-hidden">youtube</span></i></a>
+            <a target="_blank" itemprop="sameAs" rel="nofollow alternate" href="https://www.hibit.dev/rss/posts"><i class="bi bi-rss"><span class="visually-hidden">rss</span></i></a>
+        </div>
+    </div>
+</div>
+    </footer>
+
+                            <div class="fixed-bottom card w-50 m-auto mb-3 border-secondary d-none d-md-block" id="registration-card">
+    <div class="card-body d-flex justify-content-between align-items-center">
+        Hey visitor! Register your account and get access to featured articles and more - it's free.
+        <div class="text-nowrap">
+            <a href="https://www.hibit.dev/registration" class="btn-registration-action me-3">Create Account</a>
+            <a href="javascript:{}" class="btn-close" onclick="document.getElementById('registration-card').classList.add('d-md-none')" aria-label="Close"></a>
+        </div>
+    </div>
+</div>            
+    <a href="#" class="scroll-top d-flex align-items-center justify-content-center" aria-label="Scroll top"><i class="bi bi-arrow-up-short"></i></a>
+
+    <script type="text/javascript">
+    window.addEventListener('load', () => {
+        let css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.type = 'text/css';
+        css.media = 'screen';
+        css.href = 'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap';
+        document.head.append(css);
+    });
+</script>
+    <script type="text/javascript">
+	window.addEventListener('load', () => {
+		let script = document.createElement('script');
+		script.src = 'https://cdn.hibit.dev/js/bootstrap.bundle.min.js';
+		document.body.append(script);
+
+		script.addEventListener('load', () => {
+			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+
+			tooltipTriggerList.map(function (tooltipTriggerEl) {
+				return new bootstrap.Tooltip(tooltipTriggerEl)
+			})
+
+			document.dispatchEvent(new CustomEvent('bs_loaded'));
+		});
+	});
+</script>
+    <script defer type="text/javascript" src="https://cdn.hibit.dev/js/main.js?id=ccaf58122303860c86e030b8eb286f6d"></script>
+    <script type="text/javascript">
+    document.addEventListener('bs_loaded', () => {
+        let css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.type = 'text/css';
+        css.media = 'screen';
+        css.href = 'https://cdn.hibit.dev/css/icons.css?id=489f5b85783a7fd698f2b4eb3dc4db22';
+        document.head.append(css);
+    });
+</script>
+        <script type="text/javascript">
+	if(document.querySelectorAll('.blog .blog-details .content img').length > 0){
+        window.addEventListener('load', () => {
+			let css = document.createElement('link');
+			css.rel = 'stylesheet';
+			css.type = 'text/css';
+			css.media = 'screen';
+			css.href = 'https://cdn.hibit.dev/css/glightbox.min.css';
+			document.head.append(css);
+
+			css.addEventListener('load', () => {
+				css.media = 'all';
+			});
+
+			let script = document.createElement('script');
+			script.src = 'https://cdn.hibit.dev/js/glightbox.min.js';
+			document.body.append(script);
+
+			script.addEventListener('load', () => {
+				GLightbox({
+					selector: '.blog .blog-details .content img'
+				});
+			});
+		});
+    }
+</script>
+    <script type="text/javascript">
+	const blogContentPreMatches = document.querySelectorAll('.blog-details .content pre');
+	const blogCommentsPreMatches = document.querySelectorAll('.blog-details .comments .comment pre');
+
+	const hasContentPre = blogContentPreMatches.length > 0;
+	const hasCommentsPre = blogCommentsPreMatches.length > 0;
+
+	if(hasContentPre || hasCommentsPre) {
+		window.addEventListener('load', () => {
+            let css = document.createElement('link');
+            css.rel = 'stylesheet';
+            css.type = 'text/css';
+            css.media = 'screen';
+            css.href = 'https://cdn.hibit.dev/css/syntaxy.light.min.css';
+            document.head.append(css);
+
+            css.addEventListener('load', () => {
+                css.media = 'all';
+            });
+
+            let script = document.createElement('script');
+            script.src = 'https://cdn.hibit.dev/js/syntaxy.min.js';
+            document.body.append(script)
+
+			script.addEventListener('load', () => {
+				if (hasContentPre) {
+					blogContentPreMatches.forEach((element) => {
+						element.innerHTML = element.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/\\\\/gi, '\\');
+
+						var syntaxy = new Syntaxy(element, {
+							wordWrap: true,
+							codeType: 'default',
+							minHeight: '20px',
+						});
+
+						syntaxy.render();
+					});
+				}
+
+				if (hasCommentsPre) {
+					blogCommentsPreMatches.forEach((element) => {
+                        element.innerHTML = element.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/\\\\/gi, '\\');
+
+                        var syntaxy = new Syntaxy(element, {
+                            wordWrap: true,
+                            codeType: 'default',
+                            minHeight: '20px',
+                        });
+
+                        syntaxy.render();
+                    });
+				}
+			});
+		});
+    }
+</script>
+
+            <script type="text/javascript">
+	var addthisLoaderFlag = false
+
+	window.addEventListener('load', () => {
+		document.addEventListener('scroll', function() {
+			if (addthisLoaderFlag === false) {
+				const element = document.getElementById('post-meta-bottom');
+
+				if (isSelectorReached(element)) {
+					let script = document.createElement('script');
+					script.src = '//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-604a7d43967a37c4';
+					document.body.append(script);
+
+					addthisLoaderFlag = true;
+				}
+			}
+		});
+	});
+</script>
+        <script type="text/javascript">
+	var adsGooLoaderFlag = false
+
+    document.addEventListener('bs_loaded', () => {
+		document.addEventListener('scroll', () => {
+			if(adsGooLoaderFlag === false) {
+				const offset = (window.pageYOffset || document.scrollTop)  - (document.clientTop || 0);
+
+				if(window.innerHeight / 3 < offset) {
+                    let script = document.createElement('script');
+                    script.crossorigin = 'anonymous';
+                    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4982419907866266';
+                    document.body.append(script);
+
+                    adsGooLoaderFlag = true;
+				}
+			}
+		});
+	});
+</script>
+                <script type="text/javascript">
+    document.addEventListener('bs_loaded', () => {
+		let script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-39PZF9RCR1';
+        document.body.append(script);
+
+		script.addEventListener('load', () => {
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+                            gtag('config', 'G-39PZF9RCR1');
+            
+			window.addEventListener('click', function(event) {
+				gtag('event', 'navigation_click', {
+					'event_category': 'navigation'
+				});
+			});
+
+			window.addEventListener('pagehide', function(event) {
+				gtag('event', 'navigation_unloading', {
+					'event_category': 'navigation'
+				});
+			});
+
+            			    gtag('event', 'post_start_reading', {
+					'event_category': 'posts'
+				});
+
+				var gaEventSent = false
+			    var postAuthorBox = document.getElementById('post-author');
+
+				document.addEventListener('scroll', () => {
+					if (gaEventSent === false && isSelectorReached(postAuthorBox)) {
+						gtag('event', 'post_finish_reading', {
+							'event_category': 'posts'
+						});
+
+						gaEventSent = true;
+					}
+				});
+            		});
+	});
+</script>
+    </body>
+</html>
