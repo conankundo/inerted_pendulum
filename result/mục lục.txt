@@ -1,0 +1,7 @@
+giới thiệu nhóm
+lắp ghép xe
+(ban đầu, về sau bỏ vin, bỏ encoder, pin 9V)
+lý do khong chạy được
+giải pphaps
+video
+ 
